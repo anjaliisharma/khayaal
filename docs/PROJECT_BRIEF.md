@@ -233,7 +233,7 @@ React 18 + TypeScript (strict) + Vite, React Router, **TanStack Query**, React H
 ## 8. Technology stack (all free)
 
 **Backend:** Java 21 (Temurin), Spring Boot 3.x, Spring Web, Spring Data JPA (plus native SQL for the claim queries), Spring Security + JWT, Bean Validation, springdoc-openapi, Spring Scheduling with **ShedLock** (or DB-level claiming only), Micrometer.
-**Data:** PostgreSQL 16 (uses `FOR UPDATE SKIP LOCKED`, partial indexes), Flyway. Redis is **not required**.
+**Data:** PostgreSQL 16 (uses `FOR UPDATE SKIP LOCKED`, partial indexes), Flyway. Redis provides shared atomic counters for distributed sensitive-write rate limiting; PostgreSQL remains the durable source of truth.
 **Notifications:** Spring Mail + Mailpit (dev), Telegram Bot API (HTTP, no SDK required), optional Web Push with VAPID via a free library (verify license and maintenance status before adopting).
 **Backend testing:** JUnit 5, Mockito, AssertJ, jqwik (property tests), Testcontainers, ArchUnit, Awaitility (async assertions), k6.
 **Frontend:** as in 6.1, plus `vite-plugin-pwa`.

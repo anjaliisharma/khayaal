@@ -11,7 +11,7 @@
 | 4 — Notification outbox | Complete | All 29 backend tests pass. Idempotent planning, PostgreSQL SKIP LOCKED dispatch, retry/dead handling, Mailpit email, Telegram linking, discreet mode, quiet hours, and time-boundary behavior are verified. |
 | 5 — Frontend core | Complete | Auth and silent refresh, generated OpenAPI types, role-aware routes, invitation acceptance, Today, Family, Person, and medicine schedule builder/preview are implemented. All 7 frontend tests and all 4 Playwright desktop/mobile journeys pass. |
 | 6 — Product UI and PWA | Implementation complete; verification pending | Stock/forecast, first purchase and refill undo, reorder copy/share/buy, adherence, PRN logging, household roles/invites, settings/test notifications/export/delete, printable list, route splitting, installable PWA and offline messaging are implemented. Host Lighthouse and final Playwright evidence remain. |
-| 7 — Hardening and performance | Implementation complete; verification pending | Request IDs, sensitive-write rate limiting, secure-cookie configuration, operational metrics, security/deletion/stock tests, set-based Stock overview, 20/150/100k/10k synthetic fixture, k6 and two-worker recovery automation, CI e2e, architecture/scaling docs and 8 ADRs exist. Docker-backed tests and measured performance/reliability evidence remain. |
+| 7 — Hardening and performance | Implementation complete; verification pending | Request IDs, Redis-backed distributed sensitive-write rate limiting, secure-cookie configuration, operational metrics, security/deletion/stock tests, set-based Stock overview, 20/150/100k/10k synthetic fixture, k6 and two-worker recovery automation, CI e2e, architecture/scaling docs and 8 ADRs exist. Docker-backed tests and measured performance/reliability evidence remain. |
 
 ## Phase 0 decisions
 
@@ -75,7 +75,7 @@
 - Pack quantities are positive whole units, while prescribed dose quantities may use quarter units. Dose confirmation consumes only available lots and records any unmet quantity as a shortage, so physical stock never becomes negative.
 - Data export is authenticated JSON generated from household membership joins; it cannot export another household's records.
 - Account deletion purges sole-member owned households and removes channel/membership data while retaining only a non-identifying tombstone for immutable audit and stock actor references.
-- Operational rate limiting is deliberately per instance for this deployment shape; the documented scale path moves enforcement to a shared edge/Redis limiter.
+- Operational rate limiting uses Redis atomic counters with expiring fixed-window keys, providing consistent enforcement across multiple backend instances. Limits, key TTL, and fail-open behavior are environment-configurable.
 - Performance thresholds remain requirements, not claims, until k6 and `EXPLAIN ANALYZE` evidence is captured on a named machine and commit.
 
 ## Known gaps

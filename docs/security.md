@@ -5,7 +5,7 @@
 - CORS allows one configured origin with credentials. Do not use a wildcard origin.
 - Household authorization is centralized and the server remains the security boundary; hidden frontend controls are convenience only.
 - Invite and refresh tokens are stored only as SHA-256 hashes. Notification errors store exception classes rather than message content. Application logs must never contain medicine names or notification bodies.
-- Sensitive authentication and invite writes are rate-limited in memory. This protects local/single-instance use; production should enforce a shared limit at the edge or with Redis.
+- Sensitive authentication and invite writes use an atomic Redis-backed fixed-window rate limiter. The client IP and route discriminator is SHA-256 hashed before storage, keys expire automatically, and counters are shared by all backend instances. `APP_RATE_LIMIT_FAIL_OPEN` explicitly controls availability versus enforcement when Redis is unavailable; Redis failures are logged and metered.
 - Account deletion requires the exact confirmation `DELETE`. Sole-member owned households are transactionally purged; membership and channel data are removed and immutable actor references retain only a non-identifying account tombstone. Owners with other household members must remove those members first.
 
 ## Release checklist

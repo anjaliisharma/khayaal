@@ -85,8 +85,8 @@ PostgreSQL is both the transactional store and durable notification outbox. Dose
 
 ## Operations and performance
 
-- Auth and invite writes have a conservative per-instance rate limit. Production multi-instance deployments should replace it with a shared gateway or Redis limiter.
-- `X-Request-ID` is accepted or generated and returned on every request. Operational metrics are available to authenticated callers under `/actuator/metrics`, including queue depth, dead notifications, missed doses, planner duration, and delivery outcomes.
+- Auth and invite writes use an atomic Redis-backed fixed-window rate limiter, so limits remain consistent across horizontally scaled backend instances. Client identifiers are SHA-256 hashed before they become Redis keys; the failure policy and limits are environment-configurable.
+- `X-Request-ID` is accepted or generated and returned on every request. Operational metrics are available to authenticated callers under `/actuator/metrics`, including rate-limit outcomes, queue depth, dead notifications, missed doses, planner duration, and delivery outcomes.
 - Synthetic load assets are in `performance/`. Results are intentionally not claimed until measured on the target machine; follow `docs/performance.md` to record k6, dispatcher, and query-plan evidence.
 - Scale stateless API instances horizontally, keep one shared PostgreSQL cluster, run multiple safe outbox workers, and partition/archive old dose history only after measured need.
 
