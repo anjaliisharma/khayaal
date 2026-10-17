@@ -1,0 +1,56 @@
+name: khayaal
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-khayaal}
+      POSTGRES_USER: ${POSTGRES_USER:-khayaal}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-khayaal_dev_only}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  mailpit:
+    image: axllent/mailpit:v1.21
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+  backend:
+    build: ./backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-khayaal}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-khayaal}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-khayaal_dev_only}
+      APP_CORS_ALLOWED_ORIGIN: http://localhost:3000
+      APP_JWT_SECRET: ${APP_JWT_SECRET:-development-only-secret-change-before-deployment-32-bytes}
+      APP_SECURE_COOKIE: ${APP_SECURE_COOKIE:-false}
+      SPRING_MAIL_HOST: mailpit
+      SPRING_MAIL_PORT: 1025
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: http://localhost:8080
+    ports:
+      - "3000:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  postgres-data:
+

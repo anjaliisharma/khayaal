@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    # Keep the production migration PostgreSQL-native while teaching H2 its TIMESTAMPTZ alias.
+    url: "jdbc:h2:mem:khayaal;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE;INIT=CREATE DOMAIN IF NOT EXISTS TIMESTAMPTZ AS TIMESTAMP WITH TIME ZONE"
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: false
+app:
+  cors:
+    allowed-origin: http://localhost:5173
+  security:
+    jwt-secret: test-only-secret-with-at-least-thirty-two-bytes
+    access-token-minutes: 15
+    refresh-token-days: 30
+  doses:
+    generation-horizon-days: 14
+  notifications:
+    initial-delay-ms: 3600000
+    planner-rate-ms: 3600000
+    dispatch-delay-ms: 3600000
+

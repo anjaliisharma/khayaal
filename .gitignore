@@ -1,0 +1,17 @@
+.idea/
+.vscode/
+.env
+.m2/
+backend/target/
+backend/.jqwik-database
+frontend/node_modules/
+frontend/dist/
+frontend/playwright-report/
+frontend/test-results/
+frontend/*.tsbuildinfo
+frontend/vite.config.js
+frontend/vite.config.d.ts
+frontend/playwright.config.js
+frontend/playwright.config.d.ts
+*.log
+

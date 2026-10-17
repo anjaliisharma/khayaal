@@ -1,0 +1,49 @@
+spring:
+  application:
+    name: khayaal
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/khayaal}
+    username: ${SPRING_DATASOURCE_USERNAME:khayaal}
+    password: ${SPRING_DATASOURCE_PASSWORD:khayaal_dev_only}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+  mail:
+    host: ${SPRING_MAIL_HOST:localhost}
+    port: ${SPRING_MAIL_PORT:1025}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      probes:
+        enabled: true
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+app:
+  cors:
+    allowed-origin: ${APP_CORS_ALLOWED_ORIGIN:http://localhost:5173}
+  security:
+    jwt-secret: ${APP_JWT_SECRET:development-only-secret-change-before-deployment-32-bytes}
+    access-token-minutes: ${APP_ACCESS_TOKEN_MINUTES:15}
+    refresh-token-days: ${APP_REFRESH_TOKEN_DAYS:30}
+    secure-cookie: ${APP_SECURE_COOKIE:false}
+  doses:
+    generation-horizon-days: ${APP_DOSE_HORIZON_DAYS:14}
+    actions:
+      missed-grace-minutes: ${APP_MISSED_GRACE_MINUTES:120}
+      undo-window-minutes: ${APP_DOSE_UNDO_WINDOW_MINUTES:240}
+  notifications:
+    follow-up-minutes: ${APP_NOTIFICATION_FOLLOW_UP_MINUTES:15}
+    maximum-attempts: ${APP_NOTIFICATION_MAXIMUM_ATTEMPTS:5}
+    batch-size: ${APP_NOTIFICATION_BATCH_SIZE:50}
+    from-address: ${APP_NOTIFICATION_FROM_ADDRESS:reminders@khayaal.local}
+    application-url: ${APP_APPLICATION_URL:http://localhost:3000}
+    telegram-bot-token: ${TELEGRAM_BOT_TOKEN:}
+

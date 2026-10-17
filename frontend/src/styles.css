@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --canvas: 210 40% 98%;
+    --surface: 0 0% 100%;
+    --ink: 222 47% 11%;
+    --muted: 215 16% 47%;
+    --brand: 173 80% 30%;
+    color-scheme: light;
+  }
+  .dark {
+    --canvas: 222 47% 8%;
+    --surface: 217 33% 13%;
+    --ink: 210 40% 96%;
+    --muted: 215 20% 70%;
+    --brand: 172 66% 50%;
+    color-scheme: dark;
+  }
+  * {
+    @apply border-slate-200 dark:border-slate-700;
+  }
+  body {
+    @apply m-0 min-w-80 bg-canvas font-sans text-ink antialiased;
+  }
+  button,
+  a {
+    @apply focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-teal-300;
+  }
+}
+
+html[data-text-size='large'] {
+  font-size: 118%;
+}
+@media print {
+  aside,
+  header,
+  body > div > footer,
+  .print\:hidden {
+    display: none !important;
+  }
+  main {
+    padding: 0 !important;
+    max-width: none !important;
+  }
+  .print-page table,
+  .print-page th,
+  .print-page td {
+    border: 1px solid #000;
+    padding: 8px;
+    text-align: left;
+  }
+}
