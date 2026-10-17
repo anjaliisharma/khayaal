@@ -4,6 +4,7 @@ import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Component;
@@ -35,6 +36,7 @@ public class RedisSensitiveRequestRateLimiter implements SensitiveRequestRateLim
     private final Counter rejected;
     private final Counter unavailable;
 
+    @Autowired
     public RedisSensitiveRequestRateLimiter(StringRedisTemplate redis, RateLimitProperties properties,
                                             Clock clock, MeterRegistry metrics) {
         this((key, ttl) -> redis.execute(INCREMENT_AND_EXPIRE, List.of(key), ttl.toMillis()),
